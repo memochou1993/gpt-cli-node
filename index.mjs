@@ -1,23 +1,24 @@
-import { Configuration, OpenAIApi } from 'openai';
-import dotenv from 'dotenv';
+import readline from 'readline';
+import fs from 'fs';
+import {
+  chat,
+  TITLE_AI,
+  TITLE_HUMAN,
+} from './api.mjs';
 
-dotenv.config();
-
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
 });
 
-const openai = new OpenAIApi(configuration);
+const start = (reply, context = reply) => {
+  rl.question(`${reply}\n${TITLE_HUMAN}: `, async (content) => {
+    if (content) context += `\n${TITLE_HUMAN}: ${content}`;
+    const res = await chat({ context });
+    context += res.reply;
+    fs.writeFile('context.txt', context, () => {});
+    start(res.reply, context);
+  });
+};
 
-const response = await openai.createCompletion({
-  model: 'text-davinci-003',
-  prompt: '\n\nHuman: Hello, who are you?\nAI: I am an AI created by OpenAI.\nHuman: Hello, who are you?',
-  temperature: 0.9,
-  max_tokens: 150,
-  top_p: 1,
-  frequency_penalty: 0,
-  presence_penalty: 0.6,
-  stop: [' Human:', ' AI:'],
-});
-
-console.log(response.data.choices);
+start(`${TITLE_AI}: 嗨！我可以怎麼幫助你？`);
