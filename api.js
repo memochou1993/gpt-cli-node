@@ -31,8 +31,8 @@ const prompt = (context) => openai.createCompletion({
 export const chat = async ({ context, reply = '' }) => {
   const { data } = await prompt(context);
   const [choice] = data.choices;
-  context += choice.text;
-  reply += choice.text;
+  context += choice.text.trim();
+  reply += choice.text.trim();
   const res = { context, reply };
   return choice.finish_reason === FINISH_REASON_STOP ? res : chat(res);
 };

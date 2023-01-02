@@ -12,5 +12,6 @@ module.exports = {
   },
   rules: {
     'no-param-reassign': 'off',
+    'import/extensions': ['error', 'always', { ignorePackages: true }],
   },
 };

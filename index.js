@@ -4,7 +4,7 @@ import {
   chat,
   TITLE_AI,
   TITLE_HUMAN,
-} from './api.mjs';
+} from './api.js';
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -13,7 +13,7 @@ const rl = readline.createInterface({
 
 const start = (reply, context = reply) => {
   rl.question(`${reply}\n${TITLE_HUMAN}: `, async (content) => {
-    if (content) context += `\n${TITLE_HUMAN}: ${content}`;
+    if (content) context += `\n${TITLE_HUMAN}: ${content}？`;
     const res = await chat({ context });
     context += res.reply;
     fs.writeFile('context.txt', context, () => {});
